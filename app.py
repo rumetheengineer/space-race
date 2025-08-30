@@ -9,7 +9,7 @@ from iso3166 import countries
 st.set_page_config(layout="wide")
 st.title("🚀 SPACE RACE: Global Space Missions from 1957")
 
-st.markdown("### 📥 Loading and Cleaning Data")
+st.markdown("###Loading and Cleaning Data")
 missions_df = pd.read_csv('mission_launches.csv')
 
 missions_df['Price'] = pd.to_numeric(missions_df.Price, errors="coerce").fillna(0)
@@ -69,14 +69,14 @@ missions_df['Price_Filled'] = missions_df.groupby('Agency_Type').Price_Filled.tr
     lambda x: x.fillna(x.median())
 )
 
-st.markdown("### 📊 Annual Mission Count Over Time")
+st.markdown("### Annual Mission Count Over Time")
 missions_per_year = missions_df.groupby('Year').size().reset_index(name='Mission_Count')
 fig1 = px.line(missions_per_year, x='Year', y='Mission_Count',
                title='Number of Space Missions Over Time')
 fig1.update_layout(xaxis=dict(rangeslider=dict(visible=True)))
 st.plotly_chart(fig1, use_container_width=True)
 
-st.markdown("### ✅ Annual Success Rates of Space Missions")
+st.markdown("### Annual Success Rates of Space Missions")
 success_rate = missions_df.groupby('Year').Success_Binary.mean().reset_index()
 success_rate['Success_Percent'] = success_rate.Success_Binary * 100
 fig2, ax = plt.subplots(figsize=(14, 6))
@@ -87,7 +87,7 @@ ax.set_xlabel('Year')
 ax.set_ylim(0, 100)
 st.pyplot(fig2)
 
-st.markdown("### 📉 Mission Status Trends by Year")
+st.markdown("### Mission Status Trends by Year")
 status_counts = missions_df.groupby(['Year', 'Mission_Status']).size().unstack(fill_value=0)
 fig3, ax = plt.subplots(figsize=(10, 6))
 for status in status_counts.columns:
@@ -95,7 +95,7 @@ for status in status_counts.columns:
 ax.legend()
 st.pyplot(fig3)
 
-st.markdown("### 📦 Launch Outcome Breakdown by Country")
+st.markdown("### Launch Outcome Breakdown by Country")
 success_by_country = pd.crosstab(missions_df.Country_Code, missions_df.Mission_Status)
 success_by_country['Total_Missions'] = success_by_country.sum(axis=1)
 success_by_country.sort_values('Total_Missions', ascending=False, inplace=True)
@@ -115,7 +115,7 @@ ax.set_ylabel('Number of Launches')
 ax.legend()
 st.pyplot(fig4)
 
-st.markdown("### 🎬 Animated View of the Space Race Over Time")
+st.markdown("### Animated View of the Space Race Over Time")
 annual_country = missions_df.groupby(['Year', 'Country']).size().reset_index(name='Missions')
 all_years = range(annual_country.Year.min(), annual_country.Year.max() + 1)
 all_countries = annual_country.Country.unique()
@@ -136,7 +136,7 @@ fig5 = px.bar(
 fig5.update_layout(yaxis={'categoryorder': 'total ascending'})
 st.plotly_chart(fig5)
 
-st.markdown("### 🌍 Global Distribution of Missions by Country")
+st.markdown("### Global Distribution of Missions by Country")
 country_counts = missions_df.Country.value_counts().reset_index()
 country_counts.columns = ['Country', 'Mission_Count']
 fig6 = px.choropleth(
@@ -150,7 +150,7 @@ fig6 = px.choropleth(
 fig6.update_layout(geo=dict(showframe=False, projection_type='natural earth'))
 st.plotly_chart(fig6)
 
-st.markdown("### 🧭 Top Launch Sites Worldwide")
+st.markdown("### Top Launch Sites Worldwide")
 missions_df['Location'] = missions_df.Location.str.strip()
 top_sites = missions_df.Location.value_counts().head(20).reset_index()
 top_sites.columns = ['Launch_Site', 'Launch_Count']
@@ -159,7 +159,7 @@ sns.barplot(data=top_sites, x='Launch_Count', y='Launch_Site', ax=ax, palette='v
 ax.set_title('Top 20 Launch Sites by Number of Missions')
 st.pyplot(fig7)
 
-st.markdown("### 🔥 Launch Activity Heatmap by Top Launch Sites")
+st.markdown("### Launch Activity Heatmap by Top Launch Sites")
 site_year = missions_df.groupby(['Location', 'Year']).size().unstack(fill_value=0)
 top_launch_sites = missions_df['Location'].value_counts().head(20).index
 site_year_top = site_year.loc[top_launch_sites]
@@ -177,7 +177,7 @@ agency_yearly_top.plot.area(alpha=0.4, ax=ax)
 ax.set_title('Launch Volume by Top Agencies Over Time')
 st.pyplot(fig9)
 
-st.markdown("### 💸 Expenditure by Agency and Country")
+st.markdown("### Expenditure by Agency and Country")
 agg1 = missions_df.groupby(['Agency_Type', 'Country_Code', 'Organisation']).Price.sum().reset_index()
 fig10 = px.sunburst(
     agg1,
@@ -190,7 +190,7 @@ fig10 = px.sunburst(
 fig10.update_layout(margin=dict(t=50, l=0, r=0, b=0))
 st.plotly_chart(fig10)
 
-st.markdown("### 💰 Expenditure Estimate (With Median-Filled Prices)")
+st.markdown("### Expenditure Estimate (With Median-Filled Prices)")
 agg2 = missions_df.groupby(['Agency_Type', 'Country_Code', 'Organisation']).Price_Filled.sum().reset_index()
 fig11 = px.sunburst(
     agg2,
