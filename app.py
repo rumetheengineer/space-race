@@ -7,7 +7,7 @@ import seaborn as sns
 from iso3166 import countries
 
 st.set_page_config(layout="wide")
-st.title("🚀 SPACE RACE: Global Space Missions from 1957")
+st.title("SPACE RACE: Global Space Missions from 1957")
 
 st.markdown("###Loading and Cleaning Data")
 missions_df = pd.read_csv('mission_launches.csv')
